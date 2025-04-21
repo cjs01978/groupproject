@@ -1,12 +1,17 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import AddItem from '@/components/AddItem';
 
 export default function MonthlyPage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('January'); // initial month
   const year = 2025; // set year
+
+  const [showForm, setShowForm] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('');
+
 
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -141,7 +146,15 @@ export default function MonthlyPage() {
               {[...Array(daysInMonth)].map((_, index) => (
                 <div
                   key={index}
-                  className="bg-gray-400 rounded-lg h-40 flex flex-col items-center justify-start relative">
+                  className="bg-gray-400 rounded-lg h-40 flex flex-col items-center justify-start relative"
+                  onClick={() => {
+                    if (isLoggedIn) {
+                      const date = `${selectedMonth} ${index + 1}, ${year}`;
+                      setSelectedDate(date); 
+                      setShowForm(true); 
+                    }
+                  }}
+                >
                   <div className="absolute top-2 left-2 text-2xl font-bold text-gray-700">
                     {index + 1}
                   </div>
@@ -160,6 +173,12 @@ export default function MonthlyPage() {
           </div>
         </div>
       </div>
+      {showForm && (
+        <AddItem
+          selectedDate={selectedDate}
+          onClose={() => setShowForm(false)}
+        />
+      )}
     </div>
   );
 }
