@@ -4,8 +4,11 @@ import DateBar from '../components/DateBar';
 import ActivityList from '../components/ActivityList';
 import WeatherPreview from '../components/WeatherPreview';
 import { useEffect, useState } from 'react';
+import connectMongoDB from '../../config/mongodb';
+
 
 export default function Home() {
+  connectMongoDB();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // this section is so that the login/logout button is consistant
