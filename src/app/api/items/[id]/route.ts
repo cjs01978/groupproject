@@ -1,5 +1,5 @@
-import connectMongoDB from "../../../../config/mongodb";
-import Item from "../../models/dailyitems";
+import connectMongoDB from "../../../../../config/mongodb";
+import Item from "../../../../models/dailyitems";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import mongoose from "mongoose";
