@@ -4,7 +4,7 @@ import ActivityList from '../components/ActivityList';
 import WeatherPreview from '../components/WeatherPreview';
 import connectMongoDB from '../../config/mongodb';
 import { auth } from '../../auth';
-
+import Link from 'next/link';
 
 export default async function Home() {
   connectMongoDB();
@@ -12,6 +12,17 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen p-6">
+      {/* Add a navigation section at the top */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Daily View</h1>
+        <Link 
+          href="/calendar/monthly" 
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+        >
+          Switch to Monthly View
+        </Link>
+      </div>
+      
       <DateBar />
       <div className="grid grid-cols-3 gap-6 mt-6">
         <div className="col-span-2">
