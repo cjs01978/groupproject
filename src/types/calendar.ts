@@ -3,6 +3,5 @@ export interface CalendarItem {
   title: string;
   description?: string;
   imageUrl?: string;
-  date: string; // ISO string format
-  createdAt: string;
+  date: string;
 }

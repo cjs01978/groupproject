@@ -34,12 +34,12 @@ export default function CalendarEdit() {
 
   const handleItemAdded = () => {
     setShowModal(false);
-    fetchItems(); // Refresh calendar data after item is added
+    fetchItems(); 
   };
 
   const handleDeleteItem = (id: string) => {
     setItems(prev => prev.filter(item => item._id !== id));
-    fetchItems(); // Optional: also refresh in case other filters are applied
+    fetchItems(); 
   };
 
   const monthStart = startOfMonth(currentMonth);
@@ -118,7 +118,7 @@ export default function CalendarEdit() {
           onItemAdded={handleItemAdded}
           items={items.filter(item => isSameDay(parseISO(item.date), selectedDate))}
           onDeleteItem={handleDeleteItem}
-          isLoggedIn={true} // Or connect this to login state
+          isLoggedIn={true}
         />
       )}
     </div>
