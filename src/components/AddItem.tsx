@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CalendarItem } from '../types/calendar';
 
 interface AddItemProps {
@@ -23,6 +23,19 @@ export default function AddItem({
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingItem, setEditingItem] = useState<CalendarItem | null>(null);
+
+  useEffect(() => {
+    if (editingItem) {
+      setTitle(editingItem.title);
+      setDescription(editingItem.description || '');
+      setImageUrl(editingItem.imageUrl || '');
+    } else {
+      setTitle('');
+      setDescription('');
+      setImageUrl('');
+    }
+  }, [editingItem]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,10 +59,39 @@ export default function AddItem({
         throw new Error(result.error || 'Failed to add item');
       }
 
-      // Reset form and refresh calendar
-      setTitle('');
-      setDescription('');
-      setImageUrl('');
+      onItemAdded();
+      onClose();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Unknown error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingItem) return;
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch('/api/edit-item', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingItem._id,
+          title,
+          description,
+          imageUrl,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        throw new Error(result.error || 'Update failed');
+      }
+
+      setEditingItem(null);
       onItemAdded();
       onClose();
     } catch (error) {
@@ -72,13 +114,13 @@ export default function AddItem({
       const result = await res.json();
 
       if (!res.ok || !result.success) {
-        throw new Error(result.error || 'Failed to delete');
+        throw new Error(result.error || 'Delete failed');
       }
 
-      onDeleteItem(id); // Remove from UI
-      onItemAdded();    // Refresh calendar
+      onDeleteItem(id);
+      onItemAdded();
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Delete failed');
+      alert(error instanceof Error ? error.message : 'Failed to delete');
     }
   };
 
@@ -93,30 +135,41 @@ export default function AddItem({
           ×
         </button>
 
-        <h2 className="text-xl font-bold mb-2 text-center">Activities on {selectedDate.toDateString()}</h2>
+        <h2 className="text-xl font-bold mb-2 text-center">
+          {editingItem ? 'Edit Activity' : 'Add Activity'}
+        </h2>
+        <p className="text-sm mb-4 text-center text-gray-600">{selectedDate.toDateString()}</p>
 
-        {/* Existing items */}
+        {/* List existing items */}
         {items.length > 0 && (
-          <div className="mb-4 space-y-2">
+          <div className="mb-4 space-y-2 max-h-52 overflow-y-auto">
             {items.map((item) => (
-              <div key={item._id} className="flex justify-between items-center border p-2 rounded">
+              <div
+                key={item._id}
+                className="flex justify-between items-center border p-2 rounded"
+              >
                 <div className="text-sm truncate">{item.title}</div>
-                {isLoggedIn && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setEditingItem(item)}
+                    className="text-blue-500 text-xs"
+                  >
+                    Edit
+                  </button>
                   <button
                     onClick={() => handleDelete(item._id)}
-                    className="text-red-500 hover:text-red-700 text-sm"
-                    disabled={isSubmitting}
+                    className="text-red-500 text-xs"
                   >
-                    ✕
+                    Delete
                   </button>
-                )}
+                </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Add form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Add/Edit Form */}
+        <form onSubmit={editingItem ? handleEdit : handleSubmit} className="space-y-4">
           <input
             type="text"
             placeholder="Title"
@@ -146,7 +199,7 @@ export default function AddItem({
             className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Adding...' : 'Add Activity'}
+            {isSubmitting ? 'Saving...' : editingItem ? 'Update Activity' : 'Add Activity'}
           </button>
         </form>
       </div>
