@@ -36,7 +36,7 @@ const Header = ({ session }: HeaderProps) => {
   return (
     <header className="bg-blue-600 text-white shadow-md py-4 px-6 mb-6 rounded-b-lg">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Daily Navigator</h1>
+        <h1 className="text-2xl font-bold tracking-tight">The Daily Dawg</h1>
 
         <div className="flex items-center gap-4">
           {isLoggedIn && session?.user ? (
