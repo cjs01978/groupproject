@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { Session } from 'next-auth';
-import { doLogout } from '@/app/actions';
+import { signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 interface HeaderProps {
@@ -20,7 +20,7 @@ const Header = ({ session }: HeaderProps) => {
 
   const handleLoginLogout = async () => {
     if (isLoggedIn) {
-      await doLogout();
+      await signOut({callbackUrl: '/'});
     } else {
       // If already on login or signup, send home instead
       if (pathname === '/login' || pathname === '/signup') {
@@ -30,8 +30,6 @@ const Header = ({ session }: HeaderProps) => {
       }
     }
   };
-
-  const showLogin = !isLoggedIn;
 
   return (
     <header className="bg-blue-600 text-white shadow-md py-4 px-6 mb-6 rounded-b-lg">

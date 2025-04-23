@@ -10,27 +10,10 @@ import {
     format,
     getDay,
 } from 'date-fns';
-import { useEffect, useState } from 'react';
 
 export default function CalendarView() {
     const router = useRouter();
     const { currentMonth, items, fetchItems, handlePrevMonth, handleNextMonth } = useCalendarData();
-
-    const [hydrated, setHydrated] = useState(false);
-    useEffect(() => {
-        setHydrated(true);
-    }, []);
-
-    useEffect(() => {
-        if (hydrated) {
-            fetchItems();
-        }
-    }, [hydrated, currentMonth]);
-
-    if (!hydrated) {
-        return <p className="text-center mt-10 text-gray-500">Loading calendar...</p>;
-    }
-
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(currentMonth);
     const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
