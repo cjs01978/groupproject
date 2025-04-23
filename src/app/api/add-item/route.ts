@@ -1,38 +1,33 @@
+// app/api/add-item/route.ts
 import { NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
-import { CalendarItem } from '../../../types/calendar';
 
 const uri = process.env.MONGODB_URI!;
 const dbName = process.env.MONGODB_DB!;
 
 export async function POST(req: Request) {
   try {
-    const { title, description, imageUrl, date } = await req.json();
-    
+    const body = await req.json();
+    const { title, description, imageUrl, date } = body;
+
     const client = await MongoClient.connect(uri);
     const db = client.db(dbName);
-    
-    const newItem: Omit<CalendarItem, '_id'> = {
+
+    const result = await db.collection('calendarItems').insertOne({
       title,
       description: description || '',
       imageUrl: imageUrl || '',
       date,
-      createdAt: new Date()
-    };
-
-    const result = await db.collection('calendarItems').insertOne(newItem);
-    await client.close();
-
-    return NextResponse.json({
-      success: true,
-      insertedId: result.insertedId
+      createdAt: new Date().toISOString()
     });
 
+    await client.close();
+
+    return NextResponse.json({ success: true, insertedId: result.insertedId });
   } catch (error) {
     return NextResponse.json(
-      { success: false, error: 'Failed to add item' },
+      { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
 }
-

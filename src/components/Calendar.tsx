@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, parseISO } from 'date-fns';
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, parseISO } from 'date-fns';
 import AddItem from './AddItem';
 import { CalendarItem } from '../types/calendar';
 
@@ -11,154 +11,108 @@ export default function Calendar() {
   const [showModal, setShowModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Fetch items for the current month
+  // Fetch events from MongoDB for the current month
   const fetchItems = async () => {
+    const month = format(currentMonth, 'MM');
+    const year = format(currentMonth, 'yyyy');
+
     try {
-      const month = format(currentMonth, 'MM');
-      const year = format(currentMonth, 'yyyy');
       const res = await fetch(`/api/get-items?month=${month}&year=${year}`);
       const data = await res.json();
-      if (data.success) setItems(data.items);
-    } catch (error) {
-      console.error('Error fetching items:', error);
+      if (data.success) {
+        const events = data.items.map((item: CalendarItem) => ({
+          ...item,
+          date: new Date(item.date).toISOString(),
+        }));
+        setItems(events);
+      }
+    } catch (err) {
+      console.error('Failed to fetch items:', err);
     }
   };
 
-  // Handle month navigation
-  const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
-  const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
-
-  // Handle date selection
-  const handleDateClick = (day: Date) => {
-    if (!isLoggedIn) return;
-    setSelectedDate(day);
-    setShowModal(true);
-  };
-
-  // Handle item deletion
-  const handleDeleteItem = (deletedId: string) => {
-    setItems(prevItems => prevItems.filter(item => item._id !== deletedId));
-  };
-
-  // Check login status
-  useEffect(() => {
-    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(loggedIn);
-  }, []);
-
-  // Toggle login state
-  const toggleLogin = () => {
-    const newLoginState = !isLoggedIn;
-    setIsLoggedIn(newLoginState);
-    localStorage.setItem('isLoggedIn', String(newLoginState));
-  };
-
-  // Fetch items when month changes
   useEffect(() => {
     fetchItems();
   }, [currentMonth]);
 
-  // Generate calendar grid
+  useEffect(() => {
+    setIsLoggedIn(localStorage.getItem('isLoggedIn') === 'true');
+  }, []);
+
+  const handleDateClick = (date: Date) => {
+    if (!isLoggedIn) return;
+    setSelectedDate(date);
+    setShowModal(true);
+  };
+
+  const handleItemAdded = () => {
+    setShowModal(false);
+    fetchItems();
+  };
+
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
-  const monthDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+  const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
   return (
-    <div className="min-h-screen bg-white p-4">
+    <div className="p-4 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
-          {format(currentMonth, 'MMMM yyyy')}
-        </h1>
-        
-        <div className="flex gap-4">
-          <button 
-            onClick={handlePrevMonth}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
-            Previous
-          </button>
-          <button 
-            onClick={handleNextMonth}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
-            Next
-          </button>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">{format(currentMonth, 'MMMM yyyy')}</h1>
+        <div className="flex gap-2">
+          <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="bg-gray-200 px-3 py-1 rounded">Prev</button>
+          <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="bg-gray-200 px-3 py-1 rounded">Next</button>
           <button
-            onClick={toggleLogin}
-            className={`px-4 py-2 rounded ${isLoggedIn ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
+            onClick={() => {
+              const newState = !isLoggedIn;
+              setIsLoggedIn(newState);
+              localStorage.setItem('isLoggedIn', String(newState));
+            }}
+            className={`px-3 py-1 rounded text-white ${isLoggedIn ? 'bg-red-500' : 'bg-blue-500'}`}
           >
             {isLoggedIn ? 'Logout' : 'Login'}
           </button>
         </div>
       </div>
 
-      {/* Login status */}
-      {isLoggedIn && (
-        <div className="bg-blue-100 p-3 rounded mb-6">
-          <p className="text-blue-800">
-            Editing mode enabled. Click on a day to add or manage activities.
-          </p>
-        </div>
-      )}
-
-      {/* Day names header */}
-      <div className="grid grid-cols-7 gap-1 mb-2">
+      {/* Day labels */}
+      <div className="grid grid-cols-7 text-center font-medium mb-2">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="text-center font-semibold p-2">
-            {day}
-          </div>
+          <div key={day}>{day}</div>
         ))}
       </div>
 
       {/* Calendar grid */}
       <div className="grid grid-cols-7 gap-1">
-        {monthDays.map(day => {
-          const dayItems = items.filter(item => 
-            isSameDay(parseISO(item.date), day)
-          );
+        {days.map(day => {
+          const dayItems = items.filter(item => isSameDay(parseISO(item.date), day));
           return (
             <div
               key={day.toString()}
               onClick={() => handleDateClick(day)}
-              className={`min-h-24 p-2 border rounded ${
-                isSameMonth(day, currentMonth) 
-                  ? 'bg-white hover:bg-gray-50 cursor-pointer' 
-                  : 'bg-gray-100'
-              }`}
+              className={`min-h-[80px] border p-1 rounded cursor-pointer ${
+                isSameMonth(day, currentMonth) ? 'bg-white' : 'bg-gray-100'
+              } ${isSameDay(day, new Date()) ? 'border-blue-500' : ''}`}
             >
-              <div className="font-bold text-right">{format(day, 'd')}</div>
-              <div className="mt-1 space-y-1 overflow-hidden max-h-20">
-                {dayItems.slice(0, 2).map(item => (
-                  <div 
-                    key={item._id} 
-                    className="text-xs p-1 bg-blue-100 rounded truncate"
-                  >
-                    {item.title}
-                  </div>
-                ))}
-                {dayItems.length > 2 && (
-                  <div className="text-xs text-gray-500">
-                    +{dayItems.length - 2} more
-                  </div>
-                )}
-              </div>
+              <div className="text-right font-semibold text-sm">{format(day, 'd')}</div>
+              {dayItems.map(item => (
+                <div key={item._id} className="text-xs truncate bg-blue-100 px-1 rounded mt-1">{item.title}</div>
+              ))}
             </div>
           );
         })}
       </div>
 
-      {/* Activity modal */}
+      {/* Add item modal */}
       {showModal && selectedDate && (
         <AddItem
-          selectedDate={selectedDate}
-          items={items.filter(item => 
-            isSameDay(parseISO(item.date), selectedDate)
-          )}
-          onClose={() => setShowModal(false)}
-          onItemAdded={fetchItems}
-          onDeleteItem={handleDeleteItem}
-        />
+        selectedDate={selectedDate}
+        onClose={() => setShowModal(false)}
+        onItemAdded={handleItemAdded}
+        items={items.filter(item => isSameDay(parseISO(item.date), selectedDate))}
+        onDeleteItem={(id) => setItems(prev => prev.filter(item => item._id !== id))}
+        isLoggedIn={isLoggedIn}
+      />      
       )}
     </div>
   );
