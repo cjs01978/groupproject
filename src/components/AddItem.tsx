@@ -25,27 +25,34 @@ export default function AddItem({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const itemData = {
+      title,
+      description,
+      imageUrl,
+      date: format(selectedDate, 'yyyy-MM-dd')
+    };
+    
+    console.log('Submitting:', itemData);
+  
     try {
       const res = await fetch('/api/add-item', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          description,
-          imageUrl,
-          date: format(selectedDate, 'yyyy-MM-dd')
-        }),
+        body: JSON.stringify(itemData),
       });
       
-      if (res.ok) {
-        onItemAdded();
-        setTitle('');
-        setDescription('');
-        setImageUrl('');
-        setActiveTab('view');
+      const data = await res.json();
+      console.log('Response data:', data);
+  
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to add item');
       }
+  
+      onItemAdded();
+      onClose();
     } catch (error) {
-      console.error('Error adding item:', error);
+      console.error('Submission error:', error);
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
