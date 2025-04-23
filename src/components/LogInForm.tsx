@@ -1,7 +1,9 @@
 "use client";
+
 import { doCredentialLogin } from "@/app/actions";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Card from "@/components/Card"; 
 
 const LoginForm = () => {
   const router = useRouter();
@@ -28,7 +30,7 @@ const LoginForm = () => {
 
   return (
     <div className="flex justify-center mt-10 px-4">
-      <div className="w-full max-w-lg p-8 bg-white rounded-xl shadow-md border border-gray-200">
+      <Card className="w-full max-w-lg p-8">
         <h1 className="text-2xl font-semibold text-center text-blue-700">
           Log in to manage your activities
         </h1>
@@ -85,7 +87,7 @@ const LoginForm = () => {
             Sign up here
           </button>
         </p>
-      </div>
+      </Card>
     </div>
   );
 };
