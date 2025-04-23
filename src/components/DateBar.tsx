@@ -26,7 +26,7 @@ export default function DateBar() {
 
       {/* Navigation to Monthly Calendar */}
       <Link
-        href="/calendar/monthly"
+        href="/calendar/monthly/edit"
         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
       >
         View Monthly Calendar

@@ -15,12 +15,6 @@ export default async function Home() {
       {/* Add a navigation section at the top */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Daily View</h1>
-        <Link 
-          href="/calendar/monthly" 
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-        >
-          Switch to Monthly View
-        </Link>
       </div>
       
       <DateBar />
