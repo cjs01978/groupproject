@@ -1,24 +1,29 @@
-This is our weather app for Georgia students intended to give accureate weather information and help students plan their schedule around it
+# The Daily Dawg 🐕
+
+This is our Scheduling/Weather app for Georgia students. It is intended to provide accurate weather information and help students plan their schedules around it.
 
 Group Members: Timothy Chung, Iris Choi, Ran Tan, Connor Slabiak
 
 ## Getting Started
 
-First, run the development server:
+First, create .env file in the project root with contents:
+
+NEXT_PUBLIC_DOMAIN=http://localhost:3000/
+NEXT_PUBLIC_API_DOMAIN=http://localhost:3000/api
+MONGODB_URI=[MYCONNECTIONSTRING] 
+
+# Then, run the development server:
 
 ```bash
+npm install
+npm install mongodb date-fns
+npm install mongodb mongoose
+npx install next-auth@beta
+npx auth secret
+npm i bcryptjs
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
