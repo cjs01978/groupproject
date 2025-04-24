@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
 import { doCredentialLogin } from "@/app/actions";
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Card from "@/components/Card"; 
+import Card from "@/components/Card";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -30,13 +30,13 @@ const LoginForm = () => {
 
   return (
     <div className="flex justify-center mt-10 px-4">
-      <Card className="w-full max-w-lg p-8">
-        <h1 className="text-2xl font-semibold text-center text-blue-700">
+      <Card className="w-full max-w-lg p-8 border border-black">
+        <h1 className="text-2xl font-serif font-bold text-center text-[#BA0C2F]">
           Log in to manage your activities
         </h1>
 
         {error && (
-          <div className="mt-4 text-center text-sm text-blue-700 bg-blue-100 p-2 rounded border border-blue-200">
+          <div className="mt-4 text-center text-sm text-[#BA0C2F] bg-red-100 p-2 rounded border border-red-300">
             {error}
           </div>
         )}
@@ -52,7 +52,7 @@ const LoginForm = () => {
               id="email"
               placeholder="Email"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#BA0C2F] focus:border-[#BA0C2F]"
             />
           </div>
 
@@ -66,13 +66,13 @@ const LoginForm = () => {
               id="password"
               placeholder="Password"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#BA0C2F] focus:border-[#BA0C2F]"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-700 text-white font-semibold py-2 rounded-lg hover:bg-blue-800 transition"
+            className="w-full bg-black text-white font-semibold py-2 rounded-lg hover:bg-[#BA0C2F] transition"
           >
             Log In
           </button>
@@ -82,7 +82,7 @@ const LoginForm = () => {
           Don’t have an account?
           <button
             onClick={() => router.push("/signup")}
-            className="ml-1 text-blue-600 hover:underline font-medium"
+            className="ml-1 text-[#BA0C2F] hover:underline font-semibold"
           >
             Sign up here
           </button>

@@ -20,9 +20,8 @@ const Header = ({ session }: HeaderProps) => {
 
   const handleLoginLogout = async () => {
     if (isLoggedIn) {
-      await signOut({callbackUrl: '/'});
+      await signOut({ callbackUrl: '/' });
     } else {
-      // If already on login or signup, send home instead
       if (pathname === '/login' || pathname === '/signup') {
         router.push('/');
       } else {
@@ -32,19 +31,19 @@ const Header = ({ session }: HeaderProps) => {
   };
 
   return (
-    <header className="bg-blue-600 text-white shadow-md py-4 px-6 mb-6 rounded-b-lg">
+    <header className="bg-[#BA0C2F] text-white shadow-md py-4 px-6 mb-6 border-b-4 border-black">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">The Daily Dawg</h1>
+        <h1 className="text-3xl font-bold tracking-tight font-serif">The Daily Dawg</h1>
 
         <div className="flex items-center gap-4">
           {isLoggedIn && session?.user ? (
             <>
-              <span className="text-sm font-medium">
+              <span className="text-sm font-medium font-sans">
                 Welcome, {session.user.name || session.user.email}
               </span>
               <button
                 onClick={handleLoginLogout}
-                className="bg-white text-blue-700 font-semibold px-4 py-2 rounded hover:bg-gray-100 transition"
+                className="bg-black text-white font-semibold px-4 py-2 rounded hover:bg-gray-800 transition"
               >
                 Logout
               </button>
@@ -52,7 +51,7 @@ const Header = ({ session }: HeaderProps) => {
           ) : (
             <button
               onClick={handleLoginLogout}
-              className="bg-white text-blue-700 font-semibold px-4 py-2 rounded hover:bg-gray-100 transition"
+              className="bg-black text-white font-semibold px-4 py-2 rounded hover:bg-gray-800 transition"
             >
               {pathname === '/login' || pathname === '/signup' ? 'Home' : 'Login'}
             </button>

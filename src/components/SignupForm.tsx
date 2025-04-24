@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useRouter } from "next/navigation";
 import { useState, FormEvent } from "react";
@@ -13,7 +13,6 @@ const SignupForm = () => {
 
     try {
       const formData = new FormData(event.currentTarget);
-
       const username = formData.get("username") as string | null;
       const email = formData.get("email") as string | null;
       const password = formData.get("password") as string | null;
@@ -43,13 +42,13 @@ const SignupForm = () => {
 
   return (
     <div className="flex justify-center mt-10 px-4">
-      <div className="w-full max-w-lg p-8 bg-white rounded-xl shadow-md border border-gray-200">
-        <h1 className="text-2xl font-semibold text-center text-blue-700">
+      <div className="w-full max-w-lg p-8 bg-white rounded-xl shadow-md border border-black">
+        <h1 className="text-2xl font-bold font-serif text-center text-[#BA0C2F]">
           Create a New Account
         </h1>
 
         {error && (
-          <div className="mt-4 text-center text-sm text-blue-700 bg-blue-100 p-2 rounded border border-blue-200">
+          <div className="mt-4 text-center text-sm text-[#BA0C2F] bg-red-100 p-2 rounded border border-red-300">
             {error}
           </div>
         )}
@@ -60,7 +59,7 @@ const SignupForm = () => {
               Username
             </label>
             <input
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#BA0C2F]"
               type="text"
               name="username"
               id="username"
@@ -73,7 +72,7 @@ const SignupForm = () => {
               Email Address
             </label>
             <input
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#BA0C2F]"
               type="email"
               name="email"
               id="email"
@@ -86,7 +85,7 @@ const SignupForm = () => {
               Password
             </label>
             <input
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#BA0C2F]"
               type="password"
               name="password"
               id="password"
@@ -96,7 +95,7 @@ const SignupForm = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-700 text-white font-semibold py-2 rounded-lg hover:bg-blue-800 transition"
+            className="w-full bg-black text-white font-semibold py-2 rounded-lg hover:bg-[#BA0C2F] transition"
           >
             Sign Up
           </button>
@@ -106,7 +105,7 @@ const SignupForm = () => {
           Already have an account?
           <button
             onClick={() => router.push("/login")}
-            className="ml-1 text-blue-600 hover:underline font-medium"
+            className="ml-1 text-[#BA0C2F] hover:underline font-semibold"
           >
             Log in here
           </button>

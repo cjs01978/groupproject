@@ -6,7 +6,6 @@ export default function DateBar() {
   const router = useRouter();
   const today = new Date();
 
-  // Date formatting options
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'long',
     month: 'long',
@@ -14,20 +13,19 @@ export default function DateBar() {
     year: 'numeric',
   };
 
-  // Format the date (e.g., "Tuesday, May 21, 2024")
   const formattedDate = today.toLocaleDateString('en-US', options);
 
   return (
-    <div className="flex justify-between items-center mb-6 p-4 bg-white rounded-lg shadow-sm">
-      {/* Current Date Display */}
-      <h2 className="text-xl font-semibold text-gray-800">
+    <div className="flex justify-between items-center mb-6 p-4 bg-white rounded-lg shadow border border-black">
+      {/* Current Date */}
+      <h2 className="text-xl font-serif font-bold text-gray-900">
         {formattedDate}
       </h2>
 
-      {/* Navigation to Monthly Calendar */}
+      {/* Monthly Calendar Navigation */}
       <Link
         href="/calendar/monthly/edit"
-        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+        className="px-4 py-2 bg-[#BA0C2F] text-white font-medium rounded-md hover:bg-red-800 transition-colors"
       >
         View Monthly Calendar
       </Link>
